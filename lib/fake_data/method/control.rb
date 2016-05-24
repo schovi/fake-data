@@ -1,8 +1,8 @@
 module FakeData
   class Method
     class Control < FakeData::Method
-
       attr_reader :call_block
+
       class << self
         def repeat(count, params = {}, &block)
           if count.is_a?(Range)
