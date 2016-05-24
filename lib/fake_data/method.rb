@@ -4,7 +4,7 @@ require "fake_data/method/control"
 module FakeData
   class Method
     # TODO: problem with parsing "test()" => method = test; arguments = ["()"]
-    METHOD_MATCHER = /((?<klass>[a-z_.:]+)\.)?(?<method>[a-z_=\?]+)\s*(\((?<args1>.+)\)|(?<args2>.+))?\s*/i
+    METHOD_MATCHER = /((?<klass>[a-z_.:]+)\.)?(?<method>[a-z0-9_=\?]+)\s*(\((?<args1>.+)\)|(?<args2>.+))?\s*/i
     LEFT_BRACKET_MATCHER = /^\(/
     RIGHT_BRACKET_MATCHER = /\)$/
     # TODO: better argument splitting
