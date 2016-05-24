@@ -1,14 +1,10 @@
 [![Build Status](https://travis-ci.org/schovi/FakeData.png?branch=master)](https://travis-ci.org/schovi/FakeData)
-
 [![Gem Version](https://badge.fury.io/rb/fake_data.png)](http://badge.fury.io/rb/fake_data)
-
 [![Coverage Status](https://coveralls.io/repos/schovi/FakeData/badge.png)](https://coveralls.io/r/schovi/FakeData)
 
 # FakeData
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/fake_data`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Fake data generator for simple and complex structures or objects. For data generation it uses [Faker gem](https://github.com/stympy/faker)
 
 ## Installation
 
@@ -20,15 +16,130 @@ gem 'fake_data'
 
 And then execute:
 
-    $ bundle
+```
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install fake_data
+```
+$ gem install fake_data
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+With simple schema generates fake data. Supports structure controling like how many items array should have or value presence based on probability. For random data is used (Faker gem)[https://github.com/stympy/faker].
+
+### String
+
+All following rows are equivalent.
+
+```ruby
+FakeData.once("Hello, my name is %{Faker::Name.name}")
+=> "Hello, my name is Miss Darius Stokes"
+FakeData.once("Hello, my name is %{Name.name}")
+=> "Hello, my name is Ms. Santino Gutmann"
+FakeData.once("Hello, my name is %{name.name}")
+=> "Hello, my name is Miss Edward Kunde"
+```
+
+### Array
+
+#### Simple array with content
+
+```ruby
+FakeData.once(
+  [
+    "I live in %{address.city}",
+    "My family came from %{address.country}"
+  ]
+)
+=> ["I live in Winnifredshire", "And my family came from Hungary"]
+```
+
+### Hash
+
+```ruby
+FakeData.once(
+  {
+    id: "%{number.number(5)}",
+    name: "%{name.name}",
+    email: "%{internet.email}"
+  }
+)
+
+=> {"id"=>"70095", "name"=>"Mr. Alverta Gibson", "email"=>"seamus@schambergerswaniawski.name"}
+```
+
+### Repeating
+
+#### Generated Array with given number of items
+
+Use hash with only one special control key `"%{repeat(n)}"`
+
+```ruby
+FakeData.once(
+  {"%{repeat(2)}" => "I have email %{internet.email}"}
+)
+=> ["I have email eryn@bayer.name", "I have email roxane.hoppe@rosenbaum.com"]
+```
+
+#### Generated Array with random number of items
+
+From empty Array to Array with N items with `repeat(0..n)`
+
+```ruby
+3.times do
+  p FakeData.once({"%{repeat(0..2)}" => "My favorite beer is: %{beer.name}"})
+end
+
+=> ["My favorite beer is Pliny The Elder", "My favorite beer is: Brooklyn Black"]
+=> ["My favorite beer is: Ten FIDY"]
+=> []
+```
+
+#### Generated Array with random number of items and nothing for empty array
+
+For empty Array returns `nil` with `repeat(0..n, nil: true)`
+
+```ruby
+FakeData.once({"%{repeat(0..1, nil: true)}" => "My favorite beer is: %{beer.name}"})
+=> nil
+```
+
+### Value presence with probability
+
+Use hash with only one special control key `"%{maybe}"` - change is 50%. `maybe(20)` - chance is 20%
+
+```ruby
+2.times do
+  FakeData.once({"%{maybe(20)}" => "I like to watch on movies with %{superhero.name}"})
+end
+=> "I like to watch on movies with Giant Thanos Thirteen"
+=> nil
+```
+
+### Complex example
+
+```ruby
+FakeData.once(
+  {
+    id:       "%{number.number(5)}",
+    name:     "%{name.name}",
+    age:      20,
+    facebook: "%{internet.url('facebook.com/profile')}",
+    friends: {
+      "%{maybe(75)}" => {
+        "%{repeat(2..20)}" => {
+          id:       "%{number.number(5)}",
+          name:     "%{name.name}",
+          facebook: "%{internet.url('facebook.com/profile')}",
+        }
+      }
+    }
+  }
+)
+```
 
 ## Development
 
