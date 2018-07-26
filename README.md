@@ -30,7 +30,7 @@ $ gem install fake_data
 
 With simple schema generates fake data. Supports structure controling like how many items array should have or value presence based on probability. For random data is used (Faker gem)[https://github.com/stympy/faker].
 
-### String
+### String
 
 All following rows are equivalent.
 
@@ -43,7 +43,7 @@ FakeData.once("Hello, my name is %{name.name}")
 => "Hello, my name is Miss Edward Kunde"
 ```
 
-### Array
+### Array
 
 #### Simple array with content
 
